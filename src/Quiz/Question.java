@@ -1,3 +1,4 @@
+package Quiz;
 /*
 A question class with Answers.
 */ 

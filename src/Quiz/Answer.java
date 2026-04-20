@@ -1,3 +1,4 @@
+package Quiz;
 /*
  *
  * This is an answer with a Category it corresponds to

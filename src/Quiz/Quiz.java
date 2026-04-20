@@ -1,14 +1,13 @@
 
-/*
- *
- * This is the class where we create the Buzzfeed Quiz and run it. It has the main method.  
- */
+package Quiz;
+import Game.GameWriteable;
+import java.io.File;
 import java.util.Scanner;
 
-public class Quiz {
+public class Quiz implements GameWriteable {
         static Scanner sc = new Scanner(System.in);
-
-        public static void main(String[] args) throws Exception {
+private static int score=0;
+        public static void main(String[] args) {
                 // Create Categories
                 Category GE = new Category("German Empire", "You are disciplined, organized, and driven by honor and achievement." +  
                 " You like structure, efficiency, and planning ahead.");
@@ -138,7 +137,7 @@ index = getMostPopularCatIndex(cList);
 
 System.out.println("If you were a 20th entury Great Power, you'd be " + cList[index].label + ". ");
 System.out.println(cList[index].description);
-
+score = cList[index].points;
         }
 
         public static void gameIntro() {
@@ -188,6 +187,21 @@ System.out.println(cList[index].description);
                         }
                 }
                 return result;
-        }
-       
+        } 
+@Override
+public String getName() {
+    return "BuzzFeed Quiz";
+}
+
+@Override
+public int getScore() {
+    return score;
+}
+@Override
+public void play() {
+    score = 0;
+    System.out.println("Starting Quiz...");
+    main(new String[0]); 
+    writeHighScore(new File("Highscore.csv"));
+}
 }
