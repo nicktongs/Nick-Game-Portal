@@ -36,13 +36,13 @@ public interface GameWriteable extends Game {
                     // rewrite all lines except the line with the game name
                     String line = myReader.nextLine();
                     String[] data = line.split(",");
-                    if (!data[0].equals(getGameName())) {
+                    if (!data[0].equals(getName())) {
                         newFile += line + "\n";
                     }
                 }
                 // replace the Game's line with the new high score
                 // puts it at the end of the file
-                newFile += getGameName() + "," + score + "\n";
+                newFile += getName() + "," + score + "\n";
                 // write the new file
                 FileWriter myWriter = new FileWriter(f);
                 myWriter.write(newFile);
@@ -61,7 +61,7 @@ public interface GameWriteable extends Game {
             Scanner myReader = new Scanner(highscoreFile);
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split(",");
-                if (data.length != 2 || !data[0].equals(getGameName())) {
+                if (data.length != 2 || !data[0].equals(getName())) {
                     // bad line or not this game, skip
                     continue;
                 }

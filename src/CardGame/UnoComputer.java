@@ -1,3 +1,4 @@
+package CardGame;
 import java.util.HashMap;
 
 public class UnoComputer {

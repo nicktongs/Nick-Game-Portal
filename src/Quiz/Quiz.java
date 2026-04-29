@@ -194,9 +194,18 @@ public String getName() {
 }
 
 @Override
-public int getScore() {
-    return score;
+public String getScore() {
+    return String.valueOf(score);
 }
+
+@Override
+public boolean isHighScore(String score, String currentHighScore) {
+    if (currentHighScore == null) {
+        return true;
+    }
+    return Integer.parseInt(score) > Integer.parseInt(currentHighScore);
+}
+
 @Override
 public void play() {
     score = 0;

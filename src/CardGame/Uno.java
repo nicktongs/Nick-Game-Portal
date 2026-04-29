@@ -1,8 +1,16 @@
-import java.util.ArrayList;
+package CardGame;
 
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+
+import Game.GameWriteable;
+import java.util.ArrayList;
 import processing.core.PApplet;
 
-public class Uno extends CardGame {
+public class Uno extends CardGame implements GameWriteable {
+
+private CountDownLatch latch;
+private int score = 0;
     // Uno-specific state
     UnoComputer computerPlayer;
     boolean choosingWildColor = false;
@@ -113,6 +121,18 @@ protected void createDeck() {
     public boolean playCard(Card card, Hand hand) {
         super.playCard(card, hand);
         handleSpecialCards(card);
+         if (hand.getSize() == 0) { 
+        System.out.println("Game Over!");
+
+        // simple scoring for now
+        if (hand == playerOneHand) {
+            score = 1; 
+        } else {
+            score = 0;  
+        }
+
+        latch.countDown(); 
+    }
         return true;
     }
 
@@ -248,4 +268,44 @@ public void handleComputerTurn() {
         button.height = wildButtonSize;
         return button;
     }
+
+    @Override
+public String getName() {
+    return "UNO";
+}
+@Override
+public String getGameName() {
+    return "UNO";
+}
+
+@Override
+public String getScore() {
+    return String.valueOf(score);
+}
+
+@Override
+public boolean isHighScore(String score, String currentHighScore) {
+    if (currentHighScore == null) {
+        return true;
+    }
+    return Integer.parseInt(score) > Integer.parseInt(currentHighScore);
+}
+@Override
+public void play() {
+    latch = new CountDownLatch(1);
+    PApplet.runSketch(new String[] { "UNO" }, this);
+
+    try {
+        latch.await();
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    writeHighScore(new File("Highscore.csv"));
+}
+
+@Override
+public void exitActual() {
+    // prevent closing the whole portal
+}
 }

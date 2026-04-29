@@ -1,10 +1,20 @@
+package CardGame;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import processing.core.PApplet;
 
-public class CardGame {
-    // Core game components
+public class CardGame extends PApplet {
+
+@Override
+public void settings() {
+    size(800, 700);
+}
+
+@Override
+public void setup() {
+    background(0);
+}
     ArrayList<Card> deck = new ArrayList<>();
 Hand playerOneHand;
 CpuHand playerTwoHand;
@@ -81,7 +91,7 @@ CpuHand playerFourHand;
     }
 
 
-        protected void dealCards(int numCards) {
+protected void dealCards(int numCards) {
     Collections.shuffle(deck);
 
     for (int i = 0; i < numCards; i++) {
@@ -103,31 +113,28 @@ CpuHand playerFourHand;
         card4.setTurned(true);
         playerFourHand.addCard(card4);
     }
-    protected void checkForWinner() {
-        if (playerOneHand.getSize() == 0) {
-            winnerName = "Player One";
-            gameActive = false;
-        } else if (playerTwoHand.getSize() == 0) {
-            winnerName = "Player Two";
-            gameActive = false;
-        } else if (playerThreeHand.getSize() == 0) {
-            winnerName = "Player Three";
-            gameActive = false;
-        } else if (playerFourHand.getSize() == 0) {
-            winnerName = "Player Four";
-            gameActive = false;
-        }
+
+    // Arrangement of hands
+    playerOneHand.positionCards(120, 520, 70, 110, 20);
+    playerTwoHand.positionCards(120, 40, 70, 110, 20);
+    positionVerticalHand(playerThreeHand, 40, 140, 70, 110, 25);
+    positionVerticalHand(playerFourHand, 540, 140, 70, 110, 25);
+}
+
+protected void checkForWinner() {
+    if (playerOneHand.getSize() == 0) {
+        winnerName = "Player One";
+        gameActive = false;
+    } else if (playerTwoHand.getSize() == 0) {
+        winnerName = "Player Two";
+        gameActive = false;
+    } else if (playerThreeHand.getSize() == 0) {
+        winnerName = "Player Three";
+        gameActive = false;
+    } else if (playerFourHand.getSize() == 0) {
+        winnerName = "Player Four";
+        gameActive = false;
     }
-
-//Arrangement of hands
-playerOneHand.positionCards(120, 520, 70, 110, 20);
-//top
-playerTwoHand.positionCards(120, 40, 70, 110, 20);
-// Left (CPU 3)
-positionVerticalHand(playerThreeHand, 40, 140, 70, 110, 25);
-// Right (CPU 4)
-positionVerticalHand(playerFourHand, 540, 140, 70, 110, 25);
-
 }
 
 
@@ -297,4 +304,61 @@ public void handleCardClick(int mouseX, int mouseY) {
         // this method is available for overriding
         // if you want to draw additional things (like Uno's wild color choices)
     }
+
+    
+//extra added
+    @Override
+public void draw() {
+    background(0, 120, 0);
+
+    fill(255);
+    textSize(20);
+    textAlign(LEFT, TOP);
+    text("Current Player: " + getCurrentPlayer(), 20, 20);
+
+    if (lastPlayedCard != null) {
+        text("Last Played: " + lastPlayedCard.value + " of " + lastPlayedCard.suit, 20, 50);
+    }
+
+    if (gameActive) {
+        if (currentPlayer == 1) {
+            if (drawButton != null) {
+                drawButton.draw(this);
+            }
+        } else {
+            handleComputerTurn();
+        }
+
+        if (playerOneHand != null) playerOneHand.draw(this);
+        if (playerTwoHand != null) playerTwoHand.draw(this);
+        if (playerThreeHand != null) playerThreeHand.draw(this);
+        if (playerFourHand != null) playerFourHand.draw(this);
+
+        if (discardPile != null && discardPile.size() > 0) {
+            Card top = discardPile.get(discardPile.size() - 1);
+            top.setPosition(360, 300, 80, 120);
+            top.draw(this);
+        }
+
+        drawChoices(this);
+    } else {
+        fill(255);
+        textSize(36);
+        textAlign(CENTER, CENTER);
+        text("Game Over!", width / 2, height / 2 - 40);
+        textSize(24);
+        text("Winner: " + winnerName, width / 2, height / 2 + 10);
+        text("Close window to return to portal.", width / 2, height / 2 + 50);
+    }
+}
+
+@Override
+public void mousePressed() {
+    if (!gameActive) return;
+
+    if (currentPlayer == 1) {
+        handleDrawButtonClick(mouseX, mouseY);
+        handleCardClick(mouseX, mouseY);
+    }
+}
 }
